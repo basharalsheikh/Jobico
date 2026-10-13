@@ -45,7 +45,7 @@ class Project extends Model
             Media::class,
             'project_media'
         )->withPivot('sort_order')
-         ->orderBy('project_media.sort_order');
+            ->orderBy('project_media.sort_order');
     }
 
     public function updatedBy(): BelongsTo

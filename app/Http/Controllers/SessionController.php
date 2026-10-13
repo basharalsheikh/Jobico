@@ -1,14 +1,16 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class SessionController extends Controller
 {
-    //----------------------------
-     //Handle admin login.
-    //----------------------------
+    // ----------------------------
+    // Handle admin login.
+    // ----------------------------
     public function store(Request $request)
     {
         // Validate the login data sent by the user.
@@ -46,9 +48,9 @@ class SessionController extends Controller
         ]);
     }
 
-    //-----------------------
-     // Handle admin logout.
-     //----------------------
+    // -----------------------
+    // Handle admin logout.
+    // ----------------------
     public function destroy(Request $request)
     {
         // Log out the currently authenticated user.
@@ -66,9 +68,9 @@ class SessionController extends Controller
         ]);
     }
 
-    //-----------------------------------------
+    // -----------------------------------------
     // Return the currently authenticated user.
-    //----------------------------------------
+    // ----------------------------------------
     public function me(Request $request)
     {
         // Return the authenticated user's information.
@@ -77,4 +79,3 @@ class SessionController extends Controller
         ]);
     }
 }
-

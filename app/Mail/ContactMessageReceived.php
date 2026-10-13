@@ -9,10 +9,13 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Symfony\Component\Mime\Email;
 
 class ContactMessageReceived extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public $tries = 1;
 
     public function __construct(
         public ContactMessage $contactMessage
@@ -27,6 +30,15 @@ class ContactMessageReceived extends Mailable implements ShouldQueue
     {
         return new Envelope(
             subject: 'New Contact Message',
+            using: [
+                function (Email $email) {
+                    // Attach the contact message ID to the email headers.
+                    $email->getHeaders()->addTextHeader(
+                        'X-Contact-Message-ID',
+                        (string) $this->contactMessage->id
+                    );
+                },
+            ],
         );
     }
 
@@ -39,11 +51,14 @@ class ContactMessageReceived extends Mailable implements ShouldQueue
             view: 'emails.contact-message-received',
         );
     }
+
+    /**
+     * Handle a failed queued email.
+     */
     public function failed(\Throwable $exception): void
     {
-    // Mark the contact message as failed if the queued email fails
-    $this->contactMessage->update([
-        'mail_status' => 'failed',
-    ]);
+        // Mark the email notification as failed.
+        ContactMessage::whereKey($this->contactMessage->id)
+            ->update(['mail_status' => 'failed']);
     }
-    }
+}

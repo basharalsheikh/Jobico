@@ -35,6 +35,6 @@ class Page extends Model
             Media::class,
             'page_media'
         )->withPivot('sort_order')
-         ->orderBy('page_media.sort_order');
+            ->orderBy('page_media.sort_order');
     }
 }
