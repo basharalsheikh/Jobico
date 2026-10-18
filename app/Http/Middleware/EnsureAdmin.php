@@ -12,8 +12,12 @@ class EnsureAdmin
     {
         $user = $request->user();
 
-        if (! $user || ! $user->is_admin || ! $user->is_active) {
-            abort(403);
+        if (! $user) {
+            abort(401, 'Unauthenticated.');
+        }
+
+        if (! $user->is_admin || ! $user->is_active) {
+            abort(403, 'Forbidden.');
         }
 
         return $next($request);

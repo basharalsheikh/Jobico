@@ -15,9 +15,11 @@ class ProjectController extends Controller
         $projects = Project::with([
             'category',
             'coverMedia',
+            'gallery',
         ])
             ->where('status', 'published')
             ->orderBy('sort_order')
+            ->orderByDesc('id')
             ->get();
 
         return response()->json([
@@ -33,6 +35,7 @@ class ProjectController extends Controller
         $project = Project::with([
             'category',
             'coverMedia',
+            'gallery',
         ])
             ->where('status', 'published')
             ->findOrFail($id);

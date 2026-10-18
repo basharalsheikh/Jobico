@@ -12,18 +12,30 @@ class HomeController extends Controller
     // Get All Data Required for the public home page
     public function index()
     {
-        // Home page data will be added here
-        // 1- Get the general website setting
+        // Get the general website settings and related logo media.
         $setting = SiteSetting::with('logoMedia')->first();
-        // 2- Get the home page content
-        $page = Page::where('slug', 'home')->firstOrFail();
-        // 3- Get Only active hero slides orderd by their sort order
-        $heroSlides = HeroSlide::with('media')
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
 
-        // 4- Return all home page data as a JSON response
+        // Get the home page content or return 404 if it does not exist.
+        $page = Page::where('slug', 'home')->firstOrFail();
+
+        // Retrieve active hero slides that have an associated media record.
+        // Sort them by display order, then by ID for consistent ordering.
+        $heroSlidesQuery = HeroSlide::with('media')
+            ->where('is_active', true)
+            ->whereHas('media')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+
+        // In image mode, display only the first active hero slide.
+        // In slider mode, return all active hero slides.
+        if ($setting?->hero_mode === 'image') {
+            $heroSlidesQuery->limit(1);
+        }
+
+        // Execute the query and retrieve the hero slides.
+        $heroSlides = $heroSlidesQuery->get();
+
+        // Return all data required by the public home page.
         return response()->json([
             'data' => [
                 'settings' => $setting,
@@ -31,6 +43,5 @@ class HomeController extends Controller
                 'hero_slides' => $heroSlides,
             ],
         ]);
-
     }
 }

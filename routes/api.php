@@ -1,8 +1,13 @@
-
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController;
+use App\Http\Controllers\Api\V1\Admin\HeroSlideController as AdminHeroSlideController;
+use App\Http\Controllers\Api\V1\Admin\MediaController as AdminMediaController;
+use App\Http\Controllers\Api\V1\Admin\PageController as AdminPageController;
+use App\Http\Controllers\Api\V1\Admin\ProjectCategoryController as AdminProjectCategoryController;
+use App\Http\Controllers\Api\V1\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\Api\V1\Admin\SettingsController;
 use App\Http\Controllers\Api\V1\Public\ContactController;
 use App\Http\Controllers\Api\V1\Public\HomeController;
 use App\Http\Controllers\Api\V1\Public\MediaController;
@@ -56,5 +61,42 @@ Route::prefix('v1')->group(function () {
 
         // Mark a contact message as read.
         Route::patch('/admin/contact-messages/{id}/read', [ContactMessageController::class, 'markAsRead']);
+
+        // Update an existing website page.
+        Route::put('/admin/pages/{page:slug}', [AdminPageController::class, 'update']);
+        // Admin project management.
+        Route::get('/admin/projects', [AdminProjectController::class, 'index']);
+        Route::post('/admin/projects', [AdminProjectController::class, 'store']);
+        Route::get('/admin/projects/{project}', [AdminProjectController::class, 'show']);
+        Route::put('/admin/projects/{project}', [AdminProjectController::class, 'update']);
+        Route::patch('/admin/projects/{project}', [AdminProjectController::class, 'update']);
+        Route::delete('/admin/projects/{project}', [AdminProjectController::class, 'destroy']);
+        // Admin project category management.
+        Route::get('/admin/project-categories', [AdminProjectCategoryController::class, 'index']);
+        Route::post('/admin/project-categories', [AdminProjectCategoryController::class, 'store']);
+        Route::get('/admin/project-categories/{projectCategory}', [AdminProjectCategoryController::class, 'show']);
+        Route::put('/admin/project-categories/{projectCategory}', [AdminProjectCategoryController::class, 'update']);
+        Route::patch('/admin/project-categories/{projectCategory}', [AdminProjectCategoryController::class, 'update']);
+        Route::delete('/admin/project-categories/{projectCategory}', [AdminProjectCategoryController::class, 'destroy']);
+        // Admin project media.
+        Route::post('/admin/media', [AdminMediaController::class, 'store']);
+        Route::delete('/admin/media/{media}', [AdminMediaController::class, 'destroy']);
+        // Admin hero slide management.
+        Route::get('/admin/hero-slides', [AdminHeroSlideController::class, 'index']);
+        Route::post('/admin/hero-slides', [AdminHeroSlideController::class, 'store']);
+        Route::get('/admin/hero-slides/{heroSlide}', [AdminHeroSlideController::class, 'show']);
+        Route::put('/admin/hero-slides/{heroSlide}', [AdminHeroSlideController::class, 'update']);
+        Route::patch('/admin/hero-slides/{heroSlide}', [AdminHeroSlideController::class, 'update']);
+        Route::delete('/admin/hero-slides/{heroSlide}', [AdminHeroSlideController::class, 'destroy']);
+        // Get and update website settings.
+        Route::get('/admin/settings', [SettingsController::class, 'show']);
+        Route::put('/admin/settings', [SettingsController::class, 'update']);
+        // Admin hero slide management.
+        Route::get('/admin/hero-slides', [AdminHeroSlideController::class, 'index']);
+        Route::post('/admin/hero-slides', [AdminHeroSlideController::class, 'store']);
+        Route::put('/admin/hero-slides/actions/reorder', [AdminHeroSlideController::class, 'reorder']);
+        Route::get('/admin/hero-slides/{heroSlide}', [AdminHeroSlideController::class, 'show']);
+        Route::patch('/admin/hero-slides/{heroSlide}', [AdminHeroSlideController::class, 'update']);
+        Route::delete('/admin/hero-slides/{heroSlide}', [AdminHeroSlideController::class, 'destroy']);
     });
 });
