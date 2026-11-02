@@ -1,5 +1,4 @@
 <?php
-
 return [
 
     /*
@@ -43,6 +42,13 @@ return [
             'root' => storage_path('app/public'),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'legacy_hero_videos' => [
+            'driver' => 'local',
+            'root' => public_path('videos'),
             'throw' => false,
             'report' => false,
         ],

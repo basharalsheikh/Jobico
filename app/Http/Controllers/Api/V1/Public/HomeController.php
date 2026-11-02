@@ -28,7 +28,7 @@ class HomeController extends Controller
 
         // In image mode, display only the first active hero slide.
         // In slider mode, return all active hero slides.
-        if ($setting?->hero_mode === 'image') {
+        if (in_array($setting?->hero_mode, ['image', 'video'], true)) {
             $heroSlidesQuery->limit(1);
         }
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace Tests\Feature;
 
 use App\Models\Page;
@@ -25,39 +24,33 @@ class AdminPageUpdateTest extends TestCase
 
         $page = Page::create([
             'slug' => 'home',
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
             'seo_title' => null,
             'seo_description' => null,
             'content' => null,
         ]);
 
         $response = $this->actingAs($admin)->putJson('/api/v1/admin/pages/home', [
-            'title' => 'الرئيسية الجديدة',
-            'seo_title' => 'الرئيسية | شركة الجوبي',
-            'seo_description' => 'تعرف على شركة الجوبي.',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط© ط§ظ„ط¬ط¯ظٹط¯ط©',
+            'seo_title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط© | ط´ط±ظƒط© ط§ظ„ط¬ظˆط¨ظٹ',
+            'seo_description' => 'طھط¹ط±ظپ ط¹ظ„ظ‰ ط´ط±ظƒط© ط§ظ„ط¬ظˆط¨ظٹ.',
             'content' => [
-                'vision' => 'رؤيتنا هي التطور والتميز.',
-                'mission' => 'نسعى لتقديم خدمات متميزة.',
-                'values' => [
-                    [
-                        'title' => 'الجودة',
-                        'body' => 'نلتزم بأعلى معايير الجودة.',
-                    ],
-                ],
+                'vision' => 'ط±ط¤ظٹطھظ†ط§ ظ‡ظٹ ط§ظ„طھط·ظˆط± ظˆط§ظ„طھظ…ظٹط².',
+                'mission' => 'ظ†ط³ط¹ظ‰ ظ„طھظ‚ط¯ظٹظ… ط®ط¯ظ…ط§طھ ظ…طھظ…ظٹط²ط©.',
             ],
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('data.title', 'الرئيسية الجديدة')
-            ->assertJsonPath('data.content.vision', 'رؤيتنا هي التطور والتميز.');
+            ->assertJsonPath('data.title', 'ط§ظ„ط±ط¦ظٹط³ظٹط© ط§ظ„ط¬ط¯ظٹط¯ط©')
+            ->assertJsonPath('data.content.vision', 'ط±ط¤ظٹطھظ†ط§ ظ‡ظٹ ط§ظ„طھط·ظˆط± ظˆط§ظ„طھظ…ظٹط².');
 
         $this->assertDatabaseHas('pages', [
             'id' => $page->id,
-            'title' => 'الرئيسية الجديدة',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط© ط§ظ„ط¬ط¯ظٹط¯ط©',
         ]);
 
         $this->assertSame(
-            'رؤيتنا هي التطور والتميز.',
+            'ط±ط¤ظٹطھظ†ط§ ظ‡ظٹ ط§ظ„طھط·ظˆط± ظˆط§ظ„طھظ…ظٹط².',
             $page->fresh()->content['vision']
         );
     }
@@ -71,18 +64,17 @@ class AdminPageUpdateTest extends TestCase
 
         Page::create([
             'slug' => 'home',
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
             'content' => null,
         ]);
 
         $response = $this->actingAs($user)->putJson('/api/v1/admin/pages/home', [
-            'title' => 'عنوان غير مسموح',
+            'title' => 'ط¹ظ†ظˆط§ظ† ط؛ظٹط± ظ…ط³ظ…ظˆط',
             'seo_title' => null,
             'seo_description' => null,
             'content' => [
-                'vision' => 'رؤية',
-                'mission' => 'رسالة',
-                'values' => [],
+                'vision' => 'ط±ط¤ظٹط©',
+                'mission' => 'ط±ط³ط§ظ„ط©',
             ],
         ]);
 
@@ -90,7 +82,7 @@ class AdminPageUpdateTest extends TestCase
 
         $this->assertDatabaseHas('pages', [
             'slug' => 'home',
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
         ]);
     }
 
@@ -100,18 +92,17 @@ class AdminPageUpdateTest extends TestCase
 
         Page::create([
             'slug' => 'home',
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
             'content' => null,
         ]);
 
         $response = $this->actingAs($admin)->putJson('/api/v1/admin/pages/home', [
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
             'seo_title' => null,
             'seo_description' => null,
             'content' => [
-                'vision' => '',
-                'mission' => 'رسالة',
-                'values' => [],
+                'vision' => ['invalid', 'type'],
+                'mission' => 'ط±ط³ط§ظ„ط©',
             ],
         ]);
 
@@ -125,19 +116,18 @@ class AdminPageUpdateTest extends TestCase
 
         $page = Page::create([
             'slug' => 'home',
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
             'content' => null,
         ]);
 
         $response = $this->actingAs($admin)->putJson('/api/v1/admin/pages/home', [
             'slug' => 'about',
-            'title' => 'عنوان جديد',
+            'title' => 'ط¹ظ†ظˆط§ظ† ط¬ط¯ظٹط¯',
             'seo_title' => null,
             'seo_description' => null,
             'content' => [
-                'vision' => 'رؤية',
-                'mission' => 'رسالة',
-                'values' => [],
+                'vision' => 'ط±ط¤ظٹط©',
+                'mission' => 'ط±ط³ط§ظ„ط©',
             ],
         ]);
 
@@ -146,7 +136,7 @@ class AdminPageUpdateTest extends TestCase
         $this->assertDatabaseHas('pages', [
             'id' => $page->id,
             'slug' => 'home',
-            'title' => 'عنوان جديد',
+            'title' => 'ط¹ظ†ظˆط§ظ† ط¬ط¯ظٹط¯',
         ]);
 
         $this->assertDatabaseMissing('pages', [
@@ -161,19 +151,18 @@ class AdminPageUpdateTest extends TestCase
 
         $page = Page::create([
             'slug' => 'home',
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
             'content' => null,
         ]);
 
         $response = $this->actingAs($admin)->putJson('/api/v1/admin/pages/home', [
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
             'seo_title' => null,
             'seo_description' => null,
             'is_admin' => false,
             'content' => [
-                'vision' => 'رؤية',
-                'mission' => 'رسالة',
-                'values' => [],
+                'vision' => 'ط±ط¤ظٹط©',
+                'mission' => 'ط±ط³ط§ظ„ط©',
             ],
         ]);
 
@@ -182,7 +171,7 @@ class AdminPageUpdateTest extends TestCase
         $this->assertDatabaseHas('pages', [
             'id' => $page->id,
             'slug' => 'home',
-            'title' => 'الرئيسية',
+            'title' => 'ط§ظ„ط±ط¦ظٹط³ظٹط©',
         ]);
 
         $this->assertTrue((bool) $admin->fresh()->is_admin);
@@ -194,34 +183,34 @@ class AdminPageUpdateTest extends TestCase
 
         Page::create([
             'slug' => 'about',
-            'title' => 'من نحن',
+            'title' => 'ظ…ظ† ظ†طظ†',
             'content' => null,
         ]);
 
         $response = $this->actingAs($admin)->putJson('/api/v1/admin/pages/about', [
-            'title' => 'من نحن',
-            'seo_title' => 'من نحن | شركة الجوبي',
-            'seo_description' => 'تعرف على الشركة.',
+            'title' => 'ظ…ظ† ظ†طظ†',
+            'seo_title' => 'ظ…ظ† ظ†طظ† | ط´ط±ظƒط© ط§ظ„ط¬ظˆط¨ظٹ',
+            'seo_description' => 'طھط¹ط±ظپ ط¹ظ„ظ‰ ط§ظ„ط´ط±ظƒط©.',
             'content' => [
-                'intro' => 'نبذة عن الشركة.',
+                'intro' => 'ظ†ط¨ط°ط© ط¹ظ† ط§ظ„ط´ط±ظƒط©.',
                 'timeline' => [
                     [
                         'year' => '2000',
-                        'title' => 'مرحلة تجريبية',
-                        'body' => 'وصف المرحلة.',
+                        'title' => 'ظ…ط±طظ„ط© طھط¬ط±ظٹط¨ظٹط©',
+                        'body' => 'ظˆطµظپ ط§ظ„ظ…ط±طظ„ط©.',
                     ],
                 ],
                 'expertise' => [
                     [
-                        'title' => 'المقاولات',
-                        'body' => 'خبرة في مجال المقاولات.',
+                        'title' => 'ط§ظ„ظ…ظ‚ط§ظˆظ„ط§طھ',
+                        'body' => 'ط®ط¨ط±ط© ظپظٹ ظ…ط¬ط§ظ„ ط§ظ„ظ…ظ‚ط§ظˆظ„ط§طھ.',
                     ],
                 ],
             ],
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('data.content.intro', 'نبذة عن الشركة.');
+            ->assertJsonPath('data.content.intro', 'ظ†ط¨ط°ط© ط¹ظ† ط§ظ„ط´ط±ظƒط©.');
 
         $this->assertSame(
             '2000',
@@ -235,24 +224,24 @@ class AdminPageUpdateTest extends TestCase
 
         Page::create([
             'slug' => 'projects',
-            'title' => 'مشاريعنا',
+            'title' => 'ظ…ط´ط§ط±ظٹط¹ظ†ط§',
             'content' => null,
         ]);
 
         $response = $this->actingAs($admin)->putJson('/api/v1/admin/pages/projects', [
-            'title' => 'مشاريعنا',
-            'seo_title' => 'مشاريعنا | شركة الجوبي',
-            'seo_description' => 'تعرف على مشاريع الشركة.',
+            'title' => 'ظ…ط´ط§ط±ظٹط¹ظ†ط§',
+            'seo_title' => 'ظ…ط´ط§ط±ظٹط¹ظ†ط§ | ط´ط±ظƒط© ط§ظ„ط¬ظˆط¨ظٹ',
+            'seo_description' => 'طھط¹ط±ظپ ط¹ظ„ظ‰ ظ…ط´ط§ط±ظٹط¹ ط§ظ„ط´ط±ظƒط©.',
             'content' => [
-                'intro' => 'نفخر بمشاريعنا.',
+                'intro' => 'ظ†ظپط®ط± ط¨ظ…ط´ط§ط±ظٹط¹ظ†ط§.',
             ],
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('data.content.intro', 'نفخر بمشاريعنا.');
+            ->assertJsonPath('data.content.intro', 'ظ†ظپط®ط± ط¨ظ…ط´ط§ط±ظٹط¹ظ†ط§.');
 
         $this->assertSame(
-            'نفخر بمشاريعنا.',
+            'ظ†ظپط®ط± ط¨ظ…ط´ط§ط±ظٹط¹ظ†ط§.',
             Page::where('slug', 'projects')->firstOrFail()->content['intro']
         );
     }
@@ -263,24 +252,24 @@ class AdminPageUpdateTest extends TestCase
 
         Page::create([
             'slug' => 'contact',
-            'title' => 'تواصل معنا',
+            'title' => 'طھظˆط§طµظ„ ظ…ط¹ظ†ط§',
             'content' => null,
         ]);
 
         $response = $this->actingAs($admin)->putJson('/api/v1/admin/pages/contact', [
-            'title' => 'تواصل معنا',
-            'seo_title' => 'تواصل معنا | شركة الجوبي',
-            'seo_description' => 'تواصل مع الشركة.',
+            'title' => 'طھظˆط§طµظ„ ظ…ط¹ظ†ط§',
+            'seo_title' => 'طھظˆط§طµظ„ ظ…ط¹ظ†ط§ | ط´ط±ظƒط© ط§ظ„ط¬ظˆط¨ظٹ',
+            'seo_description' => 'طھظˆط§طµظ„ ظ…ط¹ ط§ظ„ط´ط±ظƒط©.',
             'content' => [
-                'intro' => 'يسعدنا تواصلك معنا.',
+                'intro' => 'ظٹط³ط¹ط¯ظ†ط§ طھظˆط§طµظ„ظƒ ظ…ط¹ظ†ط§.',
             ],
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('data.content.intro', 'يسعدنا تواصلك معنا.');
+            ->assertJsonPath('data.content.intro', 'ظٹط³ط¹ط¯ظ†ط§ طھظˆط§طµظ„ظƒ ظ…ط¹ظ†ط§.');
 
         $this->assertSame(
-            'يسعدنا تواصلك معنا.',
+            'ظٹط³ط¹ط¯ظ†ط§ طھظˆط§طµظ„ظƒ ظ…ط¹ظ†ط§.',
             Page::where('slug', 'contact')->firstOrFail()->content['intro']
         );
     }
@@ -305,7 +294,6 @@ class AdminPageUpdateTest extends TestCase
             'content' => [
                 'vision' => 'Vision',
                 'mission' => 'Mission',
-                'values' => [],
             ],
         ]);
 

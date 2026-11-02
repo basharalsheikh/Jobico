@@ -1,19 +1,21 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\FooterSetting;
 use App\Models\SiteSetting;
 
 class SiteController extends Controller
 {
-    // Get the general settings of the website
     public function index()
     {
-        // Get the main site settings with the logo information
         $settings = SiteSetting::with('logoMedia')->first();
+        $footerSettings = FooterSetting::firstOrCreate([]);
 
-        // Return the settings as a JSON response
+        if ($settings) {
+            $settings->setAttribute('footer', $footerSettings);
+        }
+
         return response()->json([
             'data' => $settings,
         ]);

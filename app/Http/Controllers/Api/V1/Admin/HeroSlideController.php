@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
 use Illuminate\Http\JsonResponse;
+use App\Models\Media;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -35,7 +37,7 @@ class HeroSlideController extends Controller
             'sort_order' => ['sometimes', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
-
+        $this->validateHeroMediaType((int) $validated['media_id']);
         $slide = HeroSlide::create($validated);
 
         return response()->json([
@@ -76,8 +78,10 @@ class HeroSlideController extends Controller
         ) {
             $this->ensureAnotherActiveSlideExists($heroSlide);
         }
-
-        $heroSlide->update($validated);
+        if (isset($validated['media_id'])) {
+        $this->validateHeroMediaType((int) $validated['media_id']);
+        }
+            $heroSlide->update($validated);
 
         return response()->json([
             'message' => 'Hero slide updated successfully.',
@@ -85,23 +89,48 @@ class HeroSlideController extends Controller
         ]);
     }
 
-    /**
-     * Ensure at least one active hero slide with media remains.
-     */
-    private function ensureAnotherActiveSlideExists(HeroSlide $slide): void
-    {
-        $anotherActiveSlideExists = HeroSlide::query()
-            ->where('id', '!=', $slide->id)
-            ->where('is_active', true)
-            ->whereHas('media')
-            ->exists();
+/**
+ * Ensure at least one active hero slide with media remains.
+ */
+private function ensureAnotherActiveSlideExists(HeroSlide $slide): void
+{
+    $anotherActiveSlideExists = HeroSlide::query()
+        ->where('id', '!=', $slide->id)
+        ->where('is_active', true)
+        ->whereHas('media')
+        ->exists();
 
-        if (! $anotherActiveSlideExists) {
-            abort(response()->json([
-                'message' => 'At least one active hero slide with an image must remain.',
-            ], 409));
-        }
+    if (! $anotherActiveSlideExists) {
+        abort(response()->json([
+            'message' => 'At least one active hero slide with media must remain.',
+        ], 409));
     }
+}
+
+/**
+ * Validate that media matches the configured hero mode.
+ */
+private function validateHeroMediaType(int $mediaId): void
+{
+    $settings = SiteSetting::first();
+    $media = Media::findOrFail($mediaId);
+
+    $isVideo = str_starts_with($media->mime, 'video/');
+    $isImage = str_starts_with($media->mime, 'image/');
+
+    $isValid = match ($settings?->hero_mode) {
+        'image' => $isImage,
+        'video' => $isVideo,
+        'slider' => $isImage || $isVideo,
+        default => false,
+    };
+
+    if (! $isValid) {
+        abort(response()->json([
+            'message' => 'The selected media type does not match the configured hero mode.',
+        ], 422));
+    }
+}
 
     /**
      * Delete a hero slide.

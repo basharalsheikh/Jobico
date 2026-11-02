@@ -141,7 +141,7 @@ class AdminSettingsTest extends TestCase
 
         $this->actingAs($admin)
             ->putJson('/api/v1/admin/settings', [
-                'hero_mode' => 'video',
+               'hero_mode' => 'invalid',
             ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('hero_mode');

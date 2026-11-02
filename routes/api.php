@@ -20,31 +20,31 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
-    // Get the general website settings.
+         // Get the general website settings.
     Route::get('/site', [SiteController::class, 'index']);
 
-    // Get a public page by its slug.
+          // Get a public page by its slug.
     Route::get('/pages/{slug}', [PageController::class, 'show']);
 
-    // Get all data required for the public home page.
+         // Get all data required for the public home page.
     Route::get('/home', [HomeController::class, 'index']);
 
-    // Get all active project categories.
+         // Get all active project categories.
     Route::get('/project-categories', [ProjectCategoryController::class, 'index']);
 
-    // Get all public projects.
+         // Get all public projects.
     Route::get('/projects', [ProjectController::class, 'index']);
 
-    // Get a single public project by its ID.
+         // Get a single public project by its ID.
     Route::get('/projects/{id}', [ProjectController::class, 'show']);
 
-    // Send a new contact message.
+         // Send a new contact message.
     Route::post('/contact', [ContactController::class, 'store']);
 
-    // Get a media file by its ID and variant.
+        // Get a media file by its ID and variant.
     Route::get('/media/{id}/{variant}', [MediaController::class, 'show']);
 
-    // Admin protected API routes.
+        // Admin protected API routes.
     Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
         // Get the currently authenticated admin user.
@@ -61,7 +61,8 @@ Route::prefix('v1')->group(function () {
 
         // Mark a contact message as read.
         Route::patch('/admin/contact-messages/{id}/read', [ContactMessageController::class, 'markAsRead']);
-
+        // Get Admin Pages
+        Route::get('/admin/pages', [AdminPageController::class, 'index']);
         // Update an existing website page.
         Route::put('/admin/pages/{page:slug}', [AdminPageController::class, 'update']);
         // Admin project management.
@@ -78,9 +79,16 @@ Route::prefix('v1')->group(function () {
         Route::put('/admin/project-categories/{projectCategory}', [AdminProjectCategoryController::class, 'update']);
         Route::patch('/admin/project-categories/{projectCategory}', [AdminProjectCategoryController::class, 'update']);
         Route::delete('/admin/project-categories/{projectCategory}', [AdminProjectCategoryController::class, 'destroy']);
-        // Admin project media.
+      // Admin project media.
+        Route::get('/admin/media', [AdminMediaController::class, 'index']);
         Route::post('/admin/media', [AdminMediaController::class, 'store']);
         Route::delete('/admin/media/{media}', [AdminMediaController::class, 'destroy']);
+
+        // Admin hero media upload.
+        Route::post(
+            '/admin/hero-media',
+            [AdminMediaController::class, 'storeHeroMedia']
+        );
         // Admin hero slide management.
         Route::get('/admin/hero-slides', [AdminHeroSlideController::class, 'index']);
         Route::post('/admin/hero-slides', [AdminHeroSlideController::class, 'store']);
@@ -91,6 +99,16 @@ Route::prefix('v1')->group(function () {
         // Get and update website settings.
         Route::get('/admin/settings', [SettingsController::class, 'show']);
         Route::put('/admin/settings', [SettingsController::class, 'update']);
+        // Get and update footer settings.
+        Route::get('/admin/footer-settings', [
+            \App\Http\Controllers\Api\V1\Admin\FooterSettingsController::class,
+            'show',
+        ]);
+
+        Route::put('/admin/footer-settings', [
+            \App\Http\Controllers\Api\V1\Admin\FooterSettingsController::class,
+            'update',
+        ]);
         // Admin hero slide management.
         Route::get('/admin/hero-slides', [AdminHeroSlideController::class, 'index']);
         Route::post('/admin/hero-slides', [AdminHeroSlideController::class, 'store']);

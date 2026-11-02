@@ -1,8 +1,9 @@
+
 *.log
 .DS_Store
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
 .phpactor.json
 .phpunit.result.cache
 /.fleet
@@ -24,3 +25,17 @@ Homestead.yaml
 Thumbs.db
 
 cookies.txt
+
+# Temporary backup files
+*.bak
+*.backup
+
+# Temporary media test files
+/media-check-3.bin
+/media-check-4.bin
+/media-test.jpg
+/media-test-2.jpg
+
+# Temporary frontend backup
+/resources/js/app-backup.tsx
+/resources/js/app-current.tsx

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
@@ -8,12 +7,8 @@ use App\Models\SiteSetting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-
 class SettingsController extends Controller
 {
-    /**
-     * Display the website settings.
-     */
     public function show(): JsonResponse
     {
         $settings = SiteSetting::with('logoMedia')->first();
@@ -29,9 +24,6 @@ class SettingsController extends Controller
         ]);
     }
 
-    /**
-     * Update the website settings.
-     */
     public function update(Request $request): JsonResponse
     {
         $settings = SiteSetting::first();
@@ -43,7 +35,18 @@ class SettingsController extends Controller
         }
 
         $validated = $request->validate([
-            'company_name' => ['sometimes', 'required', 'string', 'max:200'],
+            'company_name' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:200',
+            ],
+            'header_subtitle' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:200',
+            ],
             'logo_media_id' => [
                 'sometimes',
                 'nullable',
@@ -54,25 +57,57 @@ class SettingsController extends Controller
                 'sometimes',
                 'required',
                 'string',
-                Rule::in(['image', 'slider']),
+                Rule::in(['image', 'video', 'slider']),
             ],
-            'address' => ['sometimes', 'nullable', 'string', 'max:500'],
+            'address' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:500',
+            ],
             'phones' => ['sometimes', 'nullable', 'array'],
-            'phones.*.label' => ['required_with:phones', 'string', 'max:100'],
-            'phones.*.value' => ['required_with:phones', 'string', 'max:50'],
-            'phones.*.is_visible' => ['required_with:phones', 'boolean'],
+            'phones.*.label' => [
+                'required_with:phones',
+                'string',
+                'max:100',
+            ],
+            'phones.*.value' => [
+                'required_with:phones',
+                'string',
+                'max:50',
+            ],
+            'phones.*.is_visible' => [
+                'required_with:phones',
+                'boolean',
+            ],
             'emails' => ['sometimes', 'nullable', 'array'],
-            'emails.*.label' => ['required_with:emails', 'string', 'max:100'],
-            'emails.*.value' => ['required_with:emails', 'email', 'max:255'],
-            'emails.*.is_visible' => ['required_with:emails', 'boolean'],
-            'map_url' => ['sometimes', 'nullable', 'url', 'max:2048'],
+            'emails.*.label' => [
+                'required_with:emails',
+                'string',
+                'max:100',
+            ],
+            'emails.*.value' => [
+                'required_with:emails',
+                'email',
+                'max:255',
+            ],
+            'emails.*.is_visible' => [
+                'required_with:emails',
+                'boolean',
+            ],
+            'map_url' => [
+                'sometimes',
+                'nullable',
+                'url',
+                'max:2048',
+            ],
         ]);
 
-        // Ensure the homepage retains at least one active hero slide with media.
         $heroMode = $validated['hero_mode'] ?? $settings->hero_mode;
 
         if (
-            $heroMode === 'image'
+            isset($validated['hero_mode'])
+            && $heroMode === 'image'
             && ! HeroSlide::query()
                 ->where('is_active', true)
                 ->whereHas('media')
@@ -82,6 +117,7 @@ class SettingsController extends Controller
                 'message' => 'Image mode requires at least one active hero slide with an image.',
             ], 409);
         }
+
         $settings->fill($validated);
         $settings->save();
 

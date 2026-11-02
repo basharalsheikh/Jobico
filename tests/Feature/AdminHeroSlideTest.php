@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\HeroSlide;
 use App\Models\Media;
+use App\Models\SiteSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -79,6 +80,12 @@ class AdminHeroSlideTest extends TestCase
     public function test_admin_can_create_hero_slide(): void
     {
         $admin = $this->createAdmin();
+
+        SiteSetting::create([
+            'company_name' => 'Jobico',
+            'hero_mode' => 'image',
+        ]);
+
         $media = $this->createMedia();
 
         $this->actingAs($admin)

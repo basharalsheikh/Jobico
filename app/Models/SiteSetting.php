@@ -15,6 +15,7 @@ class SiteSetting extends Model
         'phones',
         'emails',
         'map_url',
+        'header_subtitle',
     ];
 
     protected function casts(): array
