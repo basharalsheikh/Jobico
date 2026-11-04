@@ -39,3 +39,7 @@ cookies.txt
 # Temporary frontend backup
 /resources/js/app-backup.tsx
 /resources/js/app-current.tsx
+
+# Local database backup
+/jobico-backup.sql
+/jobico-docker-backup.sql
